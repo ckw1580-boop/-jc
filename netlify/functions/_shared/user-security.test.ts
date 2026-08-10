@@ -3,16 +3,15 @@ import { describe, expect, it } from 'vitest'
 import {
   clearSessionCookie,
   createSessionToken,
+  hashSessionToken,
   hashPassword,
   normalizeUserId,
   readCookie,
   serializeSessionCookie,
+  sessionExpiresAt,
   validateRegistration,
   verifyPassword,
-  verifySessionToken,
 } from './user-security.js'
-
-const secret = 'test-only-secret-with-at-least-thirty-two-bytes'
 
 describe('user input validation', () => {
   it('normalizes and validates registration input', () => {
@@ -42,13 +41,16 @@ describe('password storage', () => {
   })
 })
 
-describe('signed session token and cookie', () => {
-  it('rejects tampered and expired tokens', () => {
+describe('database-backed session token and cookie', () => {
+  it('creates opaque tokens, stores only their hashes, and calculates expiry', () => {
     const now = Date.UTC(2026, 7, 10)
-    const token = createSessionToken('engineer_01', 3, now, secret)
-    expect(verifySessionToken(token, now, secret)).toMatchObject({ sub: 'engineer_01', ver: 3 })
-    expect(verifySessionToken(`${token}x`, now, secret)).toBeNull()
-    expect(verifySessionToken(token, now + 8 * 24 * 60 * 60 * 1000, secret)).toBeNull()
+    const first = createSessionToken()
+    const second = createSessionToken()
+    expect(first).toMatch(/^[A-Za-z0-9_-]{43}$/)
+    expect(first).not.toBe(second)
+    expect(hashSessionToken(first)).toMatch(/^[a-f0-9]{64}$/)
+    expect(hashSessionToken(first)).not.toContain(first)
+    expect(sessionExpiresAt(now)).toBe('2026-08-17T00:00:00.000Z')
   })
 
   it('serializes secure production cookies and parses request cookies', () => {

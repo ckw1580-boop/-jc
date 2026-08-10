@@ -1,4 +1,4 @@
-import { createHmac, randomBytes, scrypt, timingSafeEqual } from 'node:crypto'
+import { createHash, randomBytes, scrypt, timingSafeEqual } from 'node:crypto'
 
 export const USER_SESSION_COOKIE = 's7_user_session'
 export const USER_SESSION_SECONDS = 7 * 24 * 60 * 60
@@ -9,12 +9,7 @@ export const PASSWORD_MAX_LENGTH = 128
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const SCRYPT_KEY_LENGTH = 64
 const SCRYPT_OPTIONS = { N: 16_384, r: 8, p: 1, maxmem: 64 * 1024 * 1024 }
-
-export interface SessionPayload {
-  sub: string
-  ver: number
-  exp: number
-}
+const SESSION_TOKEN_BYTES = 32
 
 export function normalizeUserId(value: unknown) {
   return typeof value === 'string' ? value.trim().toLowerCase() : ''
@@ -118,50 +113,16 @@ export async function verifyPassword(password: string, encoded: string) {
   }
 }
 
-function configuredSecret() {
-  const secret = process.env.USER_SESSION_SECRET || ''
-  if (Buffer.byteLength(secret, 'utf8') < 32) {
-    throw new Error('USER_SESSION_SECRET must contain at least 32 bytes')
-  }
-  return secret
+export function createSessionToken() {
+  return randomBytes(SESSION_TOKEN_BYTES).toString('base64url')
 }
 
-function signatureFor(payload: string, secret: string) {
-  return createHmac('sha256', secret).update(payload, 'utf8').digest('base64url')
+export function hashSessionToken(token: string) {
+  return createHash('sha256').update(token, 'utf8').digest('hex')
 }
 
-export function createSessionToken(
-  userId: string,
-  version: number,
-  now = Date.now(),
-  secret = configuredSecret(),
-) {
-  const payload = Buffer.from(JSON.stringify({
-    sub: userId,
-    ver: version,
-    exp: Math.floor(now / 1000) + USER_SESSION_SECONDS,
-  }), 'utf8').toString('base64url')
-  return `${payload}.${signatureFor(payload, secret)}`
-}
-
-export function verifySessionToken(token: string, now = Date.now(), secret = configuredSecret()) {
-  const [payload, suppliedSignature] = token.split('.')
-  if (!payload || !suppliedSignature) return null
-  const expectedSignature = signatureFor(payload, secret)
-  const expected = Buffer.from(expectedSignature, 'utf8')
-  const supplied = Buffer.from(suppliedSignature, 'utf8')
-  if (expected.length !== supplied.length || !timingSafeEqual(expected, supplied)) return null
-
-  try {
-    const parsed = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as Partial<SessionPayload>
-    if (!parsed.sub || !USER_ID_PATTERN.test(parsed.sub) || !Number.isInteger(parsed.ver) || !Number.isInteger(parsed.exp)) {
-      return null
-    }
-    if ((parsed.exp as number) <= Math.floor(now / 1000)) return null
-    return parsed as SessionPayload
-  } catch {
-    return null
-  }
+export function sessionExpiresAt(now = Date.now()) {
+  return new Date(now + USER_SESSION_SECONDS * 1000).toISOString()
 }
 
 export function readCookie(request: Request, name = USER_SESSION_COOKIE) {

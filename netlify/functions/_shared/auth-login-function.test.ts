@@ -17,10 +17,7 @@ function loginRequest(userId = 'engineer_01', password = 'valid-password') {
   })
 }
 
-beforeAll(async () => {
-  process.env.USER_SESSION_SECRET = 'function-test-secret-with-more-than-thirty-two-bytes'
-  passwordHash = await hashPassword('valid-password')
-})
+beforeAll(async () => { passwordHash = await hashPassword('valid-password') })
 
 beforeEach(() => mocks.query.mockReset())
 
@@ -54,6 +51,7 @@ describe('auth login Function', () => {
       user_id: 'engineer_01', email: 'engineer@example.com', password_hash: passwordHash,
       account_status: 'active', session_version: 2, must_change_password: true,
     }] })
+    mocks.query.mockResolvedValueOnce({ rows: [], rowCount: 1 })
     const response = await loginHandler(loginRequest(), context)
     const body = await response.json()
     expect(response.status).toBe(200)
@@ -63,6 +61,10 @@ describe('auth login Function', () => {
       mustChangePassword: true,
     })
     expect(JSON.stringify(body)).not.toContain(passwordHash)
+    expect(mocks.query).toHaveBeenCalledTimes(2)
+    const sessionValues = mocks.query.mock.calls[1]?.[1] as unknown[]
+    expect(sessionValues[0]).toMatch(/^[a-f0-9]{64}$/)
+    expect(response.headers.get('set-cookie')).not.toContain(String(sessionValues[0]))
   })
 
   it('rejects cross-origin mutation requests before querying the database', async () => {

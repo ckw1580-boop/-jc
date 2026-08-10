@@ -2,7 +2,7 @@ import type { Context } from '@netlify/functions'
 
 import { apiError } from './http.js'
 import { database } from './storage.js'
-import { readCookie, verifySessionToken } from './user-security.js'
+import { hashSessionToken, readCookie } from './user-security.js'
 
 export interface SiteUser {
   userId: string
@@ -31,18 +31,19 @@ export function requireSameOrigin(request: Request, context: Context) {
 export async function getSiteUser(request: Request): Promise<SiteUser | null> {
   const token = readCookie(request)
   if (!token) return null
-  const payload = verifySessionToken(token)
-  if (!payload) return null
 
   const result = await database().pool.query<UserRow>(
-    `SELECT "用户ID" AS user_id, "邮箱" AS email, account_status,
-            session_version, must_change_password
-       FROM "YongHuDengLuXingXi"
-      WHERE "用户ID" = $1`,
-    [payload.sub],
+    `SELECT users."用户ID" AS user_id, users."邮箱" AS email,
+            users.account_status, users.session_version, users.must_change_password
+       FROM user_sessions sessions
+       JOIN "YongHuDengLuXingXi" users ON users."用户ID" = sessions.user_id
+      WHERE sessions.token_hash = $1
+        AND sessions.expires_at > NOW()
+        AND sessions.session_version = users.session_version`,
+    [hashSessionToken(token)],
   )
   const row = result.rows[0]
-  if (!row || row.account_status !== 'active' || row.session_version !== payload.ver) return null
+  if (!row || row.account_status !== 'active') return null
   return {
     userId: row.user_id,
     email: row.email,
