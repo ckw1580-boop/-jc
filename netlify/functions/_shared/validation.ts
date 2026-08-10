@@ -1,4 +1,4 @@
-import type { FeedbackDraftInput } from './types.js'
+import type { FeedbackDraftInput, FeedbackUpdateInput } from './types.js'
 
 export const MAX_FILES = 5
 export const MAX_FILE_SIZE = 5 * 1024 * 1024
@@ -37,6 +37,27 @@ export function validateDraft(value: unknown): {
   }
   if (data.description.length < 10 || data.description.length > 2000) {
     errors.description = '问题描述请输入 10–2000 个字符。'
+  }
+
+  return Object.keys(errors).length ? { errors } : { data }
+}
+
+export function validateFeedbackUpdate(value: unknown): {
+  data?: FeedbackUpdateInput
+  errors?: Record<string, string>
+} {
+  const source = value && typeof value === 'object' ? value as Record<string, unknown> : {}
+  const data: FeedbackUpdateInput = {
+    title: typeof source.title === 'string' ? source.title.trim() : '',
+    summary: typeof source.summary === 'string' ? source.summary.trim() : '',
+  }
+  const errors: Record<string, string> = {}
+
+  if (data.title.length < 2 || data.title.length > 100) {
+    errors.title = '公开标题请输入 2–100 个字符。'
+  }
+  if (data.summary.length < 10 || data.summary.length > 1000) {
+    errors.summary = '解决说明请输入 10–1000 个字符。'
   }
 
   return Object.keys(errors).length ? { errors } : { data }

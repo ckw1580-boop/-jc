@@ -11,6 +11,7 @@ const routes = [
   { path: '/account/change-password', name: 'user-change-password', component: () => import('../views/auth/UserChangePasswordView.vue'), meta: { title: '修改密码', layout: 'auth', requiresUser: true } },
   { path: '/home/guide', name: 'home-guide', component: () => import('../views/HomeView.vue'), props: { section: 'guide' }, meta: { title: '首页', description: '使用方法介绍', requiresUser: true } },
   { path: '/home/info', name: 'home-info', component: () => import('../views/HomeView.vue'), props: { section: 'info' }, meta: { title: '首页', description: '页面基础信息', requiresUser: true } },
+  { path: '/home/updates', name: 'home-updates', component: () => import('../views/HomeView.vue'), props: { section: 'updates' }, meta: { title: '更新信息', description: '已解决问题与维护记录', requiresUser: true } },
   { path: '/connection/status', name: 'connection-status', component: () => import('../views/ConnectionView.vue'), meta: { title: '连接', description: 'PLC 状态显示', requiresUser: true } },
   { path: '/interaction', name: 'interaction', component: () => import('../views/InteractionView.vue'), meta: { title: '交互界面', description: '模拟变量监视与控制', requiresUser: true } },
   { path: '/errors', name: 'errors', component: () => import('../views/ErrorManualView.vue'), meta: { title: '错误信息手册', description: '演示诊断信息检索', requiresUser: true } },
@@ -24,6 +25,7 @@ const routes = [
   { path: '/admin/feedback', name: 'admin-feedback', component: () => import('../views/admin/AdminFeedbackListView.vue'), meta: { title: '反馈管理', layout: 'admin', requiresAdmin: true } },
   { path: '/admin/feedback/:id', name: 'admin-feedback-detail', component: () => import('../views/admin/AdminFeedbackDetailView.vue'), meta: { title: '反馈详情', layout: 'admin', requiresAdmin: true } },
   { path: '/admin/users', name: 'admin-users', component: () => import('../views/admin/AdminUserListView.vue'), meta: { title: '用户信息管理', layout: 'admin', requiresAdmin: true } },
+  { path: '/admin/updates', name: 'admin-updates', component: () => import('../views/admin/AdminUpdateListView.vue'), meta: { title: '更新信息管理', layout: 'admin', requiresAdmin: true } },
   { path: '/:pathMatch(.*)*', redirect: '/home/guide' },
 ]
 
