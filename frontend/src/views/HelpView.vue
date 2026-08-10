@@ -33,7 +33,7 @@ import { RouterLink } from 'vue-router'
           <div><dt>错误信息手册</dt><dd>搜索演示诊断条目和建议处理步骤。</dd></div>
           <div><dt>设置</dt><dd>调整主题、密度与模拟刷新周期。</dd></div>
           <div><dt>帮助</dt><dd>查看快速开始、边界与常见问题。</dd></div>
-          <div><dt>问题反馈</dt><dd>填写联系信息、问题描述和图片附件；当前仅进行前端演示，不会发送或保存内容。</dd></div>
+          <div><dt>问题反馈</dt><dd>填写联系信息、问题描述和图片附件，提交后由 Netlify Functions 安全保存。</dd></div>
         </dl>
       </section>
     </div>
@@ -41,8 +41,8 @@ import { RouterLink } from 'vue-router'
     <section class="faq-section" aria-labelledby="faq-title">
       <div class="section-heading"><div><span class="utility-label">FAQ</span><h2 id="faq-title">常见问题</h2></div></div>
       <details>
-        <summary>问题反馈会发送到后台吗？</summary>
-        <p>不会。当前问题反馈页面只演示表单校验和图片预览，联系人、电话、邮箱、描述与图片不会上传或持久化保存。</p>
+        <summary>问题反馈会保存在哪里？</summary>
+        <p>联系人、电话、邮箱和描述保存在 Netlify Database，图片附件保存在 Netlify Blobs，仅具有 admin 角色的受邀管理员可以查看。</p>
       </details>
       <details>
         <summary>页面会连接真实 PLC 吗？</summary>

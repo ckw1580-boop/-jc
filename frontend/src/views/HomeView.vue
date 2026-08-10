@@ -60,7 +60,7 @@ const isGuide = computed(() => props.section === 'guide')
           <dl>
             <div><dt>支持系列</dt><dd>S7-1200 / S7-1500</dd></div>
             <div><dt>通信方式</dt><dd>浏览器本地模拟</dd></div>
-            <div><dt>数据保存</dt><dd>仅保存界面设置</dd></div>
+            <div><dt>数据保存</dt><dd>界面设置与已提交反馈</dd></div>
           </dl>
         </aside>
       </div>
