@@ -2489,7 +2489,7 @@ legend {
 }
 
 .access-brand:visited { color: var(--ink); }
-.access-brand img { border: 1px solid var(--line-strong); }
+.access-brand img { border: 1px solid var(--line-strong); background: var(--accent-deep); }
 .access-brand span { display: grid; gap: 2px; }
 .access-brand strong { font: 700 18px/1 Bahnschrift, "Microsoft YaHei", sans-serif; letter-spacing: 0.08em; }
 .access-brand small { color: var(--muted); font: 600 10px/1.2 "Cascadia Mono", monospace; letter-spacing: 0.12em; }
@@ -2610,8 +2610,7 @@ button.admin-detail-link.danger { color: var(--danger); }
   .admin-section-nav a.active::after { bottom: -12px; }
 }
 
-@media (max-width: 760px) {
-  .desktop-logout, .account-button { display: none; }
+@media (max-width: 860px) {
   .user-auth-page { display: block; min-height: 100vh; padding: 0; }
   .access-interlock { min-height: 100vh; border: 0; box-shadow: none; }
   .access-brand-row { min-height: 68px; }
@@ -2626,6 +2625,10 @@ button.admin-detail-link.danger { color: var(--danger); }
   .access-step { top: 58px; right: 20px; }
   .access-form-heading { padding-right: 0; margin-bottom: 24px; }
   .access-form-heading .utility-label { padding-right: 95px; }
+}
+
+@media (max-width: 760px) {
+  .desktop-logout, .account-button { display: none; }
   .admin-section-nav { flex-direction: row; overflow-x: auto; }
   .admin-section-nav a { flex: 1; justify-content: center; white-space: nowrap; }
   .admin-section-nav a.active::after { bottom: 0; }
