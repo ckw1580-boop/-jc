@@ -8,10 +8,5 @@ if (window.location.pathname === '/' && window.location.hash.startsWith('#/')) {
   window.history.replaceState(null, '', legacyPath)
 }
 
-const [{ default: router }, { initializeIdentity }] = await Promise.all([
-  import('./router'),
-  import('./composables/useIdentity'),
-])
-
-await initializeIdentity()
+const { default: router } = await import('./router')
 createApp(App).use(router).mount('#app')

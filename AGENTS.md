@@ -9,6 +9,7 @@
 - Netlify Database 保存结构化问题反馈。
 - Netlify Blobs 保存用户上传的图片附件。
 - Netlify Identity 使用邀请制账户和 `admin` 角色保护反馈后台。
+- 普通控制台用户使用用户ID、scrypt 密码哈希和签名 HttpOnly Cookie 登录；该体系与管理员 Identity 相互独立。
 
 项目不再使用 Django、SimpleUI、SQLite 或 Python 运行时。
 
@@ -43,8 +44,10 @@ pnpm run dev
 - API 使用稳定的 `/api/` 路径，统一返回 JSON 错误结构和 `requestId`。
 - 所有公开输入必须在 Function 中重新校验，不得只依赖前端校验。
 - 反馈文字字段保存在 `shujufankui`，图片二进制只保存在 `feedback-images` Blob Store。
+- 普通用户资料保存在精确表名 `"YongHuDengLuXingXi"`；`"密码"` 字段只能保存带随机盐的 scrypt 哈希。
 - Blob Key 必须由服务端生成，不得直接使用用户文件名。
 - 管理 API 必须同时校验 Identity 登录状态和 `admin` 角色。
+- 普通用户会话密钥来自 `USER_SESSION_SECRET`，不得写入源码；禁用、删除或重置密码必须使旧会话失效。
 - Database 结构变更必须新增 `netlify/database/migrations/` SQL 文件，不得改写已经发布的迁移。
 - 密钥、管理员邮箱和其他部署配置使用 Netlify 环境变量，不得写入前端 `VITE_` 变量或源码。
 

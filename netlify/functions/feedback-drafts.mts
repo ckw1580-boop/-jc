@@ -4,6 +4,7 @@ import type { Config, Context } from '@netlify/functions'
 
 import { apiError, json, readJson, unexpectedError } from './_shared/http.js'
 import { createUploadToken, database, hashUploadToken } from './_shared/storage.js'
+import { requireSiteUser } from './_shared/user-auth.js'
 import { MAX_FILES, validateDraft } from './_shared/validation.js'
 
 export default async (request: Request, context: Context) => {
@@ -12,6 +13,8 @@ export default async (request: Request, context: Context) => {
   }
 
   try {
+    const authorization = await requireSiteUser(request, context)
+    if ('response' in authorization) return authorization.response
     const validation = validateDraft(await readJson(request))
     if (!validation.data) {
       return apiError(context, 422, 'validation_failed', '请修正表单中的错误。', validation.errors)

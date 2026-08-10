@@ -2454,6 +2454,191 @@ legend {
   }
 }
 
+/* Ordinary user access interlock */
+.user-auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 4vw, 56px);
+  background: var(--bg);
+}
+
+.access-interlock {
+  width: min(1180px, 100%);
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+  box-shadow: 0 24px 64px rgba(15, 28, 31, 0.14);
+}
+
+.access-brand-row {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px clamp(18px, 3vw, 32px);
+  border-bottom: 1px solid var(--line);
+}
+
+.access-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.access-brand:visited { color: var(--ink); }
+.access-brand img { border: 1px solid var(--line-strong); }
+.access-brand span { display: grid; gap: 2px; }
+.access-brand strong { font: 700 18px/1 Bahnschrift, "Microsoft YaHei", sans-serif; letter-spacing: 0.08em; }
+.access-brand small { color: var(--muted); font: 600 10px/1.2 "Cascadia Mono", monospace; letter-spacing: 0.12em; }
+
+.access-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+}
+
+.access-schematic {
+  min-height: 630px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  padding: clamp(32px, 5vw, 68px);
+  background: var(--panel-strong);
+  border-right: 1px solid var(--line);
+}
+
+.access-schematic h1 { max-width: 610px; margin-top: 8px; }
+.access-schematic p { max-width: 620px; }
+
+.interlock-rail {
+  min-height: 150px;
+  display: grid;
+  grid-template-columns: auto minmax(24px, 1fr) 64px minmax(24px, 1fr) 92px minmax(24px, 1fr) auto;
+  align-items: center;
+  padding: 26px 0;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.rail-terminal {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--line-strong);
+  color: var(--muted);
+  background: var(--panel);
+  font: 700 11px/1 "Cascadia Mono", monospace;
+}
+
+.rail-wire { height: 3px; background: var(--line-strong); }
+.rail-wire.active { position: relative; background: var(--accent); }
+.rail-wire.active::after { position: absolute; top: -3px; right: 0; width: 9px; height: 9px; content: ""; background: var(--accent); }
+
+.rail-contact { height: 54px; position: relative; display: block; }
+.rail-contact::before, .rail-contact::after { position: absolute; top: 25px; width: 10px; height: 10px; content: ""; border: 2px solid var(--accent); background: var(--panel); }
+.rail-contact::before { left: 5px; }
+.rail-contact::after { right: 5px; }
+.rail-contact i:first-child { position: absolute; top: 29px; left: 16px; width: 31px; height: 3px; background: var(--accent); transform: rotate(-18deg); transform-origin: left; }
+
+.rail-module { height: 116px; display: grid; grid-template-columns: 1fr 10px; grid-template-rows: 1fr repeat(3, 10px); gap: 7px; padding: 14px; color: var(--ink); background: var(--surface); border: 2px solid var(--line-strong); box-shadow: inset 5px 0 0 var(--accent); }
+.rail-module b { align-self: start; font: 700 13px/1 "Cascadia Mono", monospace; }
+.rail-module i { grid-column: 2; border: 1px solid var(--success); background: var(--success); }
+
+.access-specs { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.access-specs div { display: grid; gap: 6px; padding: 14px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.access-specs dt { color: var(--muted); font-size: 11px; }
+.access-specs dd { margin: 0; color: var(--accent-deep); font-size: 13px; font-weight: 700; }
+
+.access-form-station { position: relative; display: flex; flex-direction: column; padding: clamp(28px, 4vw, 52px); }
+.interlock-status { min-height: 42px; display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: calc(clamp(28px, 4vw, 52px) * -1) calc(clamp(28px, 4vw, 52px) * -1) 38px; padding: 0 clamp(20px, 4vw, 32px); color: var(--accent-deep); background: var(--accent-soft); border-bottom: 1px solid color-mix(in srgb, var(--accent) 42%, var(--line)); font-size: 12px; }
+.interlock-status span { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+.interlock-status i { width: 9px; height: 9px; background: var(--accent); }
+.interlock-status strong { font-family: "Cascadia Mono", "Microsoft YaHei", monospace; animation: interlock-state 240ms ease-out both; }
+.access-step { position: absolute; top: 72px; right: clamp(28px, 4vw, 52px); color: var(--faint); font-size: 10px; letter-spacing: 0.08em; }
+.access-form-heading { padding-right: 80px; margin-bottom: 28px; }
+.access-form-heading h2 { margin: 6px 0 8px; font-size: clamp(26px, 3vw, 36px); }
+.access-form-heading p { margin-bottom: 0; }
+.access-form { display: grid; gap: 18px; }
+.access-form .field small { color: var(--muted); font-weight: 400; }
+.access-form .field-error { font-weight: 600; }
+.access-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+.auth-message { margin: 0 0 18px; padding: 12px 14px; border-left: 4px solid currentColor; }
+.auth-message.error { color: var(--danger); background: var(--danger-soft); }
+.auth-message.success { color: var(--success); background: var(--success-soft); }
+.admin-access-link { align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 24px; font-size: 13px; font-weight: 700; text-underline-offset: 4px; }
+
+@keyframes interlock-state { from { opacity: 0.35; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+
+.operator-chip { min-width: 88px; display: grid; gap: 1px; padding: 5px 9px; border-left: 3px solid var(--accent); background: var(--panel-strong); }
+.operator-chip span { color: var(--muted); font-size: 9px; }
+.operator-chip strong { max-width: 110px; overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.desktop-logout:disabled { opacity: 0.55; cursor: wait; }
+.mobile-operator { display: grid; gap: 3px; padding: 14px 12px; margin-bottom: 8px; background: var(--panel-strong); border-left: 3px solid var(--accent); }
+.mobile-operator span, .mobile-operator small { color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+.mobile-account-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; padding-top: 16px; }
+
+/* Admin section navigation and user operations */
+.admin-section-nav { display: flex; align-self: stretch; align-items: stretch; }
+.admin-section-nav a { position: relative; min-height: 44px; display: inline-flex; align-items: center; padding: 0 18px; color: var(--muted); font: 700 13px/1 Bahnschrift, "Microsoft YaHei", sans-serif; text-decoration: none; }
+.admin-section-nav a:hover { color: var(--ink); background: var(--panel-strong); }
+.admin-section-nav a.active { color: var(--accent-deep); }
+.admin-section-nav a.active::after { position: absolute; right: 14px; bottom: -12px; left: 14px; height: 3px; content: ""; background: var(--accent); }
+.user-admin-table { min-width: 1120px; }
+.account-status { display: inline-flex; align-items: center; gap: 7px; min-height: 30px; padding: 0 9px; border: 1px solid currentColor; font-size: 12px; font-weight: 700; }
+.account-status i { width: 7px; height: 7px; background: currentColor; }
+.account-status.active { color: var(--success); background: var(--success-soft); }
+.account-status.disabled { color: var(--danger); background: var(--danger-soft); }
+.user-row-actions { display: flex; gap: 12px; white-space: nowrap; }
+button.admin-detail-link { min-height: 44px; padding: 0; border: 0; color: var(--accent-deep); background: transparent; }
+button.admin-detail-link.danger { color: var(--danger); }
+.admin-action-dialog { width: min(520px, calc(100% - 28px)); padding: 0; color: var(--ink); background: var(--panel); border: 1px solid var(--line-strong); box-shadow: 0 28px 80px rgba(5, 14, 16, 0.32); }
+.admin-action-dialog::backdrop { background: rgba(5, 14, 16, 0.66); }
+.admin-action-dialog form { display: grid; gap: 18px; padding: 28px; }
+.admin-action-dialog h2, .admin-action-dialog p { margin: 0; }
+.dialog-safety-line { margin: -28px -28px 0; padding: 11px 28px; color: var(--accent-deep); background: var(--accent-soft); border-bottom: 1px solid var(--line); }
+.dialog-safety-line.danger { color: var(--danger); background: var(--danger-soft); }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 10px; padding-top: 4px; }
+
+@media (max-width: 1180px) {
+  .operator-chip { display: none; }
+  .admin-header { flex-wrap: wrap; }
+  .admin-section-nav { order: 3; width: 100%; border-top: 1px solid var(--line); }
+  .admin-section-nav a.active::after { bottom: -12px; }
+}
+
+@media (max-width: 760px) {
+  .desktop-logout, .account-button { display: none; }
+  .user-auth-page { display: block; min-height: 100vh; padding: 0; }
+  .access-interlock { min-height: 100vh; border: 0; box-shadow: none; }
+  .access-brand-row { min-height: 68px; }
+  .access-layout { grid-template-columns: 1fr; }
+  .access-schematic { min-height: auto; padding: 26px 20px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .access-schematic > div:first-child p:last-child, .access-specs { display: none; }
+  .access-schematic h1 { margin-bottom: 0; font-size: 28px; }
+  .interlock-rail { min-height: 104px; padding: 14px 0; }
+  .rail-module { height: 82px; }
+  .access-form-station { padding: 24px 20px max(32px, env(safe-area-inset-bottom)); }
+  .interlock-status { margin: -24px -20px 28px; padding: 0 20px; }
+  .access-step { top: 58px; right: 20px; }
+  .access-form-heading { padding-right: 0; margin-bottom: 24px; }
+  .access-form-heading .utility-label { padding-right: 95px; }
+  .admin-section-nav { flex-direction: row; overflow-x: auto; }
+  .admin-section-nav a { flex: 1; justify-content: center; white-space: nowrap; }
+  .admin-section-nav a.active::after { bottom: 0; }
+  .dialog-actions { display: grid; grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 420px) {
+  .interlock-rail { grid-template-columns: auto minmax(14px, 1fr) 48px minmax(14px, 1fr) 72px minmax(14px, 1fr) auto; }
+  .rail-terminal { width: 36px; height: 36px; }
+  .access-actions, .mobile-account-actions { grid-template-columns: 1fr; }
+  .access-brand small { display: none; }
+}
+
 @media (max-width: 480px) {
   .brand-copy strong {
     font-size: 14px;
