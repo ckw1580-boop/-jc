@@ -9,8 +9,10 @@ const handler: Handler = async (event) => {
     }
   }
   const user = payload.user || {}
-  const adminEmail = Netlify.env.get('ADMIN_EMAIL')?.trim().toLowerCase()
-  const displayName = Netlify.env.get('ADMIN_DISPLAY_NAME')?.trim() || 'wck-tlss'
+  // Identity event functions use the legacy Lambda handler runtime, where
+  // environment variables are exposed through Node's process.env.
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase()
+  const displayName = process.env.ADMIN_DISPLAY_NAME?.trim() || 'wck-tlss'
   const isAdmin = Boolean(adminEmail && user.email?.toLowerCase() === adminEmail)
 
   return {
