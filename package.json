@@ -1,0 +1,21 @@
+{
+  "name": "s7-control-netlify",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "packageManager": "pnpm@11.16.0",
+  "scripts": {
+    "build": "pnpm --filter dxwz-frontend build",
+    "dev": "netlify dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "netlify:build": "netlify build --filter dxwz-frontend"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "netlify-cli": "^27.1.1",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}

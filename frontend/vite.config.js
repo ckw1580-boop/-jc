@@ -1,20 +1,15 @@
-import { fileURLToPath, URL } from 'node:url'
-
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
 
-export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/static/vue/' : '/',
+export default defineConfig({
+  base: '/',
   plugins: [vue()],
   build: {
-    outDir: fileURLToPath(new URL('../static/vue', import.meta.url)),
-    emptyOutDir: true,
+    outDir: 'dist',
   },
   server: {
-    proxy: {
-      '/admin': 'http://127.0.0.1:8000',
-      '/api': 'http://127.0.0.1:8000',
-      '/static': 'http://127.0.0.1:8000',
-    },
+    host: '127.0.0.1',
+    port: 5173,
+    strictPort: true,
   },
-}))
+})

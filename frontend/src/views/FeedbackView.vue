@@ -2,6 +2,8 @@
 import { computed, nextTick, onBeforeUnmount, reactive, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
+import { ApiError, apiRequest } from '../services/api'
+
 const MAX_FILES = 5
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp'])
@@ -24,22 +26,39 @@ const status = ref('idle')
 const announcement = ref('')
 const dragActive = ref(false)
 const lastAttachmentCount = ref(0)
+const lastSubmissionId = ref('')
+const submitError = ref('')
+const uploadProgress = reactive({ current: 0, total: 0, fileName: '' })
 const fileInput = ref(null)
 const contactInput = ref(null)
 const phoneInput = ref(null)
 const emailInput = ref(null)
 const descriptionInput = ref(null)
-let submitTimer = null
 let attachmentSequence = 0
+let submissionSession = null
 
 const isSubmitting = computed(() => status.value === 'submitting')
+const submitButtonLabel = computed(() => {
+  if (isSubmitting.value) return uploadProgress.fileName ? `正在上传 ${uploadProgress.current}/${uploadProgress.total}` : '正在提交…'
+  if (status.value === 'error' && submissionSession) return '重试提交'
+  return '提交问题'
+})
 const isDirty = computed(() =>
   Boolean(form.contact || form.phone || form.email || form.description || attachments.value.length),
 )
 
 function clearFieldError(field) {
   errors[field] = ''
+  invalidateSubmissionSession()
   if (status.value === 'error') status.value = 'idle'
+}
+
+function invalidateSubmissionSession() {
+  submissionSession = null
+  uploadProgress.current = 0
+  uploadProgress.total = 0
+  uploadProgress.fileName = ''
+  submitError.value = ''
 }
 
 function formatFileSize(bytes) {
@@ -61,6 +80,7 @@ function createAttachment(file) {
 }
 
 function addFiles(fileList) {
+  if (isSubmitting.value) return
   imageError.value = ''
   const rejected = []
   const candidates = []
@@ -88,7 +108,9 @@ function addFiles(fileList) {
   if (candidates.length > available) {
     rejected.push(`最多添加 ${MAX_FILES} 张图片，请删除已有图片后再试`)
   }
-  attachments.value.push(...candidates.slice(0, available).map(createAttachment))
+  const accepted = candidates.slice(0, available)
+  if (accepted.length) invalidateSubmissionSession()
+  attachments.value.push(...accepted.map(createAttachment))
   imageError.value = rejected.join('；')
 }
 
@@ -115,6 +137,7 @@ function removeAttachment(id) {
   if (index === -1) return
   URL.revokeObjectURL(attachments.value[index].previewUrl)
   attachments.value.splice(index, 1)
+  invalidateSubmissionSession()
   imageError.value = ''
 }
 
@@ -167,22 +190,66 @@ async function submitFeedback() {
   }
 
   status.value = 'submitting'
-  announcement.value = '正在模拟提交问题反馈…'
-  submitTimer = window.setTimeout(() => {
+  submitError.value = ''
+  announcement.value = '正在安全提交问题反馈…'
+
+  try {
+    if (!submissionSession) {
+      const draft = await apiRequest('/api/feedback/drafts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      submissionSession = { id: draft.id, token: draft.uploadToken, nextAttachment: 0 }
+    }
+
+    uploadProgress.total = attachments.value.length
+    for (let index = submissionSession.nextAttachment; index < attachments.value.length; index += 1) {
+      const attachment = attachments.value[index]
+      uploadProgress.current = index + 1
+      uploadProgress.fileName = attachment.file.name
+      await apiRequest(`/api/feedback/${submissionSession.id}/attachments`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${submissionSession.token}`,
+          'Content-Type': attachment.file.type,
+          'X-File-Name': encodeURIComponent(attachment.file.name),
+        },
+        body: attachment.file,
+      })
+      submissionSession.nextAttachment = index + 1
+    }
+
+    uploadProgress.fileName = ''
+    const completed = await apiRequest(`/api/feedback/${submissionSession.id}/complete`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${submissionSession.token}` },
+    })
     lastAttachmentCount.value = attachments.value.length
+    lastSubmissionId.value = completed.id
     form.contact = ''
     form.phone = ''
     form.email = ''
     form.description = ''
     clearAttachments()
     status.value = 'success'
-    announcement.value = '演示提交完成。内容没有发送或保存。'
-    submitTimer = null
-  }, 800)
+    announcement.value = '问题反馈已安全保存。'
+    submissionSession = null
+  } catch (error) {
+    if (error instanceof ApiError && error.fields) {
+      Object.assign(errors, error.fields)
+      await focusFirstError()
+    }
+    status.value = 'error'
+    submitError.value = error instanceof ApiError ? error.message : '提交失败，请检查网络后重试。'
+    announcement.value = `问题反馈提交失败：${submitError.value}`
+  }
 }
 
 async function resetForAnother() {
   status.value = 'idle'
+  submitError.value = ''
+  lastSubmissionId.value = ''
   announcement.value = '可以填写新的问题反馈。'
   await nextTick()
   contactInput.value?.focus()
@@ -202,7 +269,6 @@ onBeforeRouteLeave(() => {
 window.addEventListener('beforeunload', beforeUnload)
 onBeforeUnmount(() => {
   window.removeEventListener('beforeunload', beforeUnload)
-  if (submitTimer) window.clearTimeout(submitTimer)
   clearAttachments()
 })
 </script>
@@ -215,20 +281,20 @@ onBeforeUnmount(() => {
         <h1 id="feedback-title">问题反馈</h1>
         <p>记录操作中遇到的现象和联系信息，并用图片补充现场细节。</p>
       </div>
-      <span class="demo-warning"><i aria-hidden="true">!</i>仅前端演示</span>
+      <span class="demo-warning"><i aria-hidden="true">✓</i>Netlify 安全提交</span>
     </header>
 
     <div class="feedback-notice" role="note">
       <strong>隐私与数据边界</strong>
-      <p>本页面不会发送或保存联系人、电话、邮箱、问题描述及图片。刷新或离开页面后，尚未提交的内容会丢失。</p>
+      <p>提交后，联系信息和问题描述会保存到 Netlify Database，图片会保存到 Netlify Blobs，仅授权管理员可以查看。尚未提交的本地内容刷新后会丢失。</p>
     </div>
 
     <div v-if="status === 'success'" class="feedback-success" aria-labelledby="feedback-success-title">
       <div class="feedback-success-mark" aria-hidden="true">✓</div>
       <div>
-        <p class="utility-label">SIMULATION COMPLETE</p>
-        <h2 id="feedback-success-title">演示提交完成</h2>
-        <p>表单校验已完成，{{ lastAttachmentCount }} 张图片已从浏览器内存中清除。所有内容均未发送或保存。</p>
+        <p class="utility-label">SUBMISSION COMPLETE</p>
+        <h2 id="feedback-success-title">问题反馈已提交</h2>
+        <p>反馈编号 <span class="mono">{{ lastSubmissionId }}</span> 已保存，共上传 {{ lastAttachmentCount }} 张图片。管理员可在反馈后台查看。</p>
         <button class="button button-primary" type="button" @click="resetForAnother">再提交一条</button>
       </div>
     </div>
@@ -253,6 +319,7 @@ onBeforeUnmount(() => {
               maxlength="50"
               placeholder="例如：王工…"
               required
+              :disabled="isSubmitting"
               :aria-invalid="Boolean(errors.contact)"
               :aria-describedby="errors.contact ? 'contact-error' : undefined"
               @input="clearFieldError('contact')"
@@ -272,6 +339,7 @@ onBeforeUnmount(() => {
               maxlength="32"
               placeholder="例如：138 0000 0000…"
               required
+              :disabled="isSubmitting"
               :aria-invalid="Boolean(errors.phone)"
               :aria-describedby="errors.phone ? 'phone-error' : undefined"
               @input="clearFieldError('phone')"
@@ -292,6 +360,7 @@ onBeforeUnmount(() => {
               spellcheck="false"
               placeholder="例如：name@example.com…"
               required
+              :disabled="isSubmitting"
               :aria-invalid="Boolean(errors.email)"
               :aria-describedby="errors.email ? 'email-error' : undefined"
               @input="clearFieldError('email')"
@@ -311,6 +380,7 @@ onBeforeUnmount(() => {
               rows="8"
               placeholder="请描述设备系列、操作步骤、当前现象和期望结果…"
               required
+              :disabled="isSubmitting"
               :aria-invalid="Boolean(errors.description)"
               :aria-describedby="errors.description ? 'description-error description-count' : 'description-count'"
               @input="clearFieldError('description')"
@@ -320,7 +390,7 @@ onBeforeUnmount(() => {
           </label>
         </div>
 
-        <fieldset class="attachment-fieldset">
+        <fieldset class="attachment-fieldset" :disabled="isSubmitting">
           <legend>图片附件 <span>可选</span></legend>
           <div
             class="attachment-dropzone"
@@ -361,10 +431,12 @@ onBeforeUnmount(() => {
         </fieldset>
 
         <div class="feedback-form-actions">
-          <p>提交只会触发当前页面的演示成功状态。</p>
+          <p v-if="submitError" class="field-error" role="alert">{{ submitError }}</p>
+          <p v-else-if="isSubmitting && uploadProgress.fileName">正在上传：{{ uploadProgress.fileName }}</p>
+          <p v-else>内容经过服务端校验后写入 Netlify，图片按顺序逐张上传。</p>
           <button class="button button-primary" type="submit" :disabled="isSubmitting">
             <span v-if="isSubmitting" class="button-spinner" aria-hidden="true"></span>
-            {{ isSubmitting ? '正在模拟提交…' : '提交问题' }}
+            {{ submitButtonLabel }}
           </button>
         </div>
       </form>
@@ -378,9 +450,9 @@ onBeforeUnmount(() => {
           <li><span>03</span><div><strong>补充证据</strong><p>添加能显示状态、参数或故障位置的图片。</p></div></li>
         </ol>
         <div class="feedback-boundary">
-          <span class="mono">LOCAL / MEMORY ONLY</span>
-          <strong>不连接反馈服务</strong>
-          <p>图片仅使用临时预览地址，不转换为 Base64，也不发起网络请求。</p>
+          <span class="mono">NETLIFY / ENCRYPTED</span>
+          <strong>结构化记录与附件分离保存</strong>
+          <p>文字记录保存到 Netlify Database，图片使用随机 Key 保存到 Blobs，不转换为 Base64，也不会公开附件地址。</p>
         </div>
       </aside>
     </div>

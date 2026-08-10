@@ -18,6 +18,9 @@ htmlcov/
 build/
 dist/
 frontend/node_modules/
+node_modules/
+.pnpm-store/
+frontend/dist/
 static/vue/
 *.egg-info/
 .eggs/
@@ -32,6 +35,8 @@ media/
 .env.*
 !.env.example
 *.local
+.netlify/
+deno.lock
 
 # IDE and editor settings
 .idea/

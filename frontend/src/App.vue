@@ -6,11 +6,16 @@ import AppHeader from './components/AppHeader.vue'
 import StatusBar from './components/StatusBar.vue'
 
 const route = useRoute()
+const isAdminLayout = computed(() => route.meta.layout === 'admin')
 const pageTitle = computed(() => route.meta.title || '工业控制台')
 const pageDescription = computed(() => route.meta.description || 'S7 系列 PLC 前端模拟工作站')
 </script>
 
 <template>
+  <div v-if="isAdminLayout" class="admin-app-shell">
+    <RouterView />
+  </div>
+  <template v-else>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <div class="app-shell">
     <AppHeader />
@@ -25,4 +30,5 @@ const pageDescription = computed(() => route.meta.description || 'S7 系列 PLC 
 
     <StatusBar />
   </div>
+  </template>
 </template>
