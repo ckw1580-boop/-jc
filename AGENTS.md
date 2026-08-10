@@ -47,7 +47,7 @@ pnpm run dev
 - 普通用户资料保存在精确表名 `"YongHuDengLuXingXi"`；`"密码"` 字段只能保存带随机盐的 scrypt 哈希。
 - Blob Key 必须由服务端生成，不得直接使用用户文件名。
 - 管理 API 必须同时校验 Identity 登录状态和 `admin` 角色。
-- 普通用户会话密钥来自 `USER_SESSION_SECRET`，不得写入源码；禁用、删除或重置密码必须使旧会话失效。
+- 普通用户会话使用随机令牌，数据库仅保存 SHA-256 哈希；禁用、删除或重置密码必须使旧会话失效。
 - Database 结构变更必须新增 `netlify/database/migrations/` SQL 文件，不得改写已经发布的迁移。
 - 密钥、管理员邮箱和其他部署配置使用 Netlify 环境变量，不得写入前端 `VITE_` 变量或源码。
 

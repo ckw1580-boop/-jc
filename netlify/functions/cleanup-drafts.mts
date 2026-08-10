@@ -5,6 +5,7 @@ import type { FeedbackRow } from './_shared/types.js'
 
 export default async (_request: Request, context: Context) => {
   const db = database()
+  const expiredSessions = await db.pool.query('DELETE FROM user_sessions WHERE expires_at <= NOW()')
   const result = await db.pool.query<Pick<FeedbackRow, 'id' | 'image_attachments'>>(
     `SELECT id, image_attachments
      FROM shujufankui
@@ -27,7 +28,7 @@ export default async (_request: Request, context: Context) => {
     deleted += 1
   }
 
-  console.log(`[${context.requestId}] Deleted ${deleted} stale feedback drafts`)
+  console.log(`[${context.requestId}] Deleted ${expiredSessions.rowCount || 0} expired user sessions and ${deleted} stale feedback drafts`)
 }
 
 export const config: Config = {

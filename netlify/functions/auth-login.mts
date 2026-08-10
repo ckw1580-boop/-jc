@@ -4,6 +4,8 @@ import { apiError, json, readJson, unexpectedError } from './_shared/http.js'
 import { database } from './_shared/storage.js'
 import {
   createSessionToken,
+  hashSessionToken,
+  sessionExpiresAt,
   serializeSessionCookie,
   validateLogin,
   verifyPassword,
@@ -28,7 +30,8 @@ export default async (request: Request, context: Context) => {
     const validation = validateLogin(await readJson(request))
     if (!validation.data) return apiError(context, 422, 'validation_failed', '请修正登录信息。', validation.errors)
     const { userId, password } = validation.data
-    const result = await database().pool.query<LoginRow>(
+    const db = database()
+    const result = await db.pool.query<LoginRow>(
       `SELECT "用户ID" AS user_id, "邮箱" AS email, "密码" AS password_hash,
               account_status, session_version, must_change_password
          FROM "YongHuDengLuXingXi" WHERE "用户ID" = $1`,
@@ -39,7 +42,12 @@ export default async (request: Request, context: Context) => {
     if (!row || !valid) return apiError(context, 401, 'invalid_credentials', '用户ID或密码不正确。')
     if (row.account_status === 'disabled') return apiError(context, 403, 'account_disabled', '该账号已被管理员禁用。')
 
-    const token = createSessionToken(row.user_id, row.session_version)
+    const token = createSessionToken()
+    await db.pool.query(
+      `INSERT INTO user_sessions (token_hash, user_id, session_version, expires_at)
+       VALUES ($1, $2, $3, $4)`,
+      [hashSessionToken(token), row.user_id, row.session_version, sessionExpiresAt()],
+    )
     return json({
       user: { userId: row.user_id, email: row.email },
       mustChangePassword: row.must_change_password,
