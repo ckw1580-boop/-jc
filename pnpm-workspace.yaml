@@ -1,5 +1,6 @@
 packages:
   - frontend
+  - netlify/functions
 
 allowBuilds:
   esbuild: true

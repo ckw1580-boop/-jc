@@ -9,7 +9,7 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  external_node_modules = ["@netlify/blobs", "@netlify/database", "@netlify/functions"]
+  external_node_modules = ["@netlify/blobs", "@netlify/database", "@netlify/functions", "@netlify/identity"]
 
 [dev]
   command = "pnpm --filter dxwz-frontend dev"

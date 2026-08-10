@@ -10,13 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "netlify:build": "netlify build"
-  },
-  "dependencies": {
-    "@netlify/blobs": "^10.7.12",
-    "@netlify/database": "^1.1.0",
-    "@netlify/functions": "^5.3.0",
-    "@netlify/identity": "^1.2.0"
+    "netlify:build": "netlify build --filter dxwz-frontend"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
