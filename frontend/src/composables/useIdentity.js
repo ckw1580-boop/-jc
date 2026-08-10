@@ -14,6 +14,19 @@ const initializationError = ref('')
 let initialization
 let unsubscribe
 
+export function hasAdminRole(currentUser) {
+  if (!currentUser) return false
+
+  const roleSources = [
+    currentUser.roles,
+    currentUser.appMetadata?.roles,
+    currentUser.app_metadata?.roles,
+  ]
+
+  return currentUser.role === 'admin'
+    || roleSources.some((roles) => Array.isArray(roles) && roles.includes('admin'))
+}
+
 export function initializeIdentity() {
   if (initialization) return initialization
   initialization = (async () => {
@@ -34,9 +47,7 @@ export function initializeIdentity() {
 }
 
 export function useIdentity() {
-  const isAdmin = computed(() =>
-    user.value?.role === 'admin' || user.value?.roles?.includes('admin'),
-  )
+  const isAdmin = computed(() => hasAdminRole(user.value))
 
   async function login(email, password) {
     const currentUser = await identityLogin(email, password)
