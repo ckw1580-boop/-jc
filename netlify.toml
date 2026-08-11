@@ -5,6 +5,8 @@
 [build.environment]
   NODE_VERSION = "22"
   PNPM_VERSION = "11.16.0"
+  PNPM_FLAGS = "--filter dxwz-frontend... --filter s7-control-functions..."
+  ELECTRON_SKIP_BINARY_DOWNLOAD = "1"
 
 [functions]
   directory = "netlify/functions"
@@ -26,7 +28,7 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'self' https://localhost:18443; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     X-Content-Type-Options = "nosniff"

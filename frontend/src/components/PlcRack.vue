@@ -5,6 +5,7 @@ const props = defineProps({
   series: { type: String, default: 'S7-1500' },
   state: { type: String, default: 'disconnected' },
   compact: { type: Boolean, default: false },
+  mode: { type: String, default: 'simulation' },
 })
 
 const modules = computed(() =>
@@ -27,14 +28,14 @@ const modules = computed(() =>
       ],
 )
 
-const rackLabel = computed(() => `${props.series} 模拟机架，状态：${props.state}`)
+const rackLabel = computed(() => `${props.series} ${props.mode === 'real' ? '实际连接' : '模拟机架'}，状态：${props.state}`)
 </script>
 
 <template>
   <figure class="plc-rack" :class="[{ compact }, `rack-${state}`]" :aria-label="rackLabel">
     <div class="rack-topline">
       <span>{{ series }}</span>
-      <span>SIMULATED RACK / 01</span>
+      <span>{{ mode === 'real' ? 'LOCAL S7 LINK / TCP 102' : 'SIMULATED RACK / 01' }}</span>
     </div>
     <div class="rack-rail" aria-hidden="true">
       <div v-for="(module, index) in modules" :key="`${module.type}-${index}`" class="plc-module" :class="`module-${module.type.toLowerCase()}`">

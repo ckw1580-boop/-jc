@@ -48,7 +48,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
   <header class="app-header">
     <RouterLink class="brand" to="/home/guide" aria-label="S7 CONTROL 首页">
       <span class="brand-symbol" aria-hidden="true"><img :src="logoMark" alt="" /></span>
-      <span class="brand-copy"><strong>S7 CONTROL</strong><small>PLC 模拟工作站</small></span>
+      <span class="brand-copy"><strong>S7 CONTROL</strong><small>PLC 工业工作站</small></span>
     </RouterLink>
 
     <nav class="primary-nav" aria-label="主导航">

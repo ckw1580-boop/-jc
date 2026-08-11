@@ -20,8 +20,8 @@ function confirmReset() {
     <header class="view-heading">
       <div>
         <p class="utility-label">SYSTEM / PREFERENCES</p>
-        <h1 id="settings-title">界面与模拟设置</h1>
-        <p>调整显示方式和前端数据刷新节奏，修改会保存在当前浏览器。</p>
+        <h1 id="settings-title">界面与刷新设置</h1>
+        <p>调整显示方式，以及模拟与实际变量的刷新节奏；修改会保存在当前浏览器。</p>
       </div>
     </header>
 
@@ -63,7 +63,7 @@ function confirmReset() {
         </section>
 
         <section aria-labelledby="data-title">
-          <div class="settings-section-heading"><span>02</span><div><h2 id="data-title">模拟数据</h2><p>控制变量表和趋势图的更新频率。</p></div></div>
+          <div class="settings-section-heading"><span>02</span><div><h2 id="data-title">变量刷新</h2><p>控制模拟趋势和实际 PLC 变量快照的请求频率。</p></div></div>
           <fieldset class="refresh-options">
             <legend>刷新周期</legend>
             <label v-for="interval in [500, 1000, 2000]" :key="interval" :class="{ selected: settings.refreshInterval === interval }">

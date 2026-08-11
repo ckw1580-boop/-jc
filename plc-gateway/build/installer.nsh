@@ -1,0 +1,3 @@
+!macro customUnInstall
+  nsExec::ExecToLog 'powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "$$metadata = Join-Path $$env:APPDATA ''S7 Control PLC Gateway\\tls\\metadata.json''; if (Test-Path $$metadata) { $$thumbprint = (Get-Content $$metadata -Raw | ConvertFrom-Json).thumbprint; Remove-Item -LiteralPath (''Cert:\\CurrentUser\\My\\'' + $$thumbprint) -Force -ErrorAction SilentlyContinue; Remove-Item -LiteralPath (''Cert:\\CurrentUser\\Root\\'' + $$thumbprint) -Force -ErrorAction SilentlyContinue; Remove-Item -LiteralPath (Split-Path $$metadata) -Recurse -Force -ErrorAction SilentlyContinue }"'
+!macroend
