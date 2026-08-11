@@ -26,9 +26,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter s7-plc-gateway test
-      - run: pnpm --filter s7-plc-gateway package:win
+      - name: Build unsigned CI smoke artifact
+        run: pnpm --filter s7-plc-gateway package:win
       - uses: actions/upload-artifact@v4
         with:
-          name: s7-control-plc-gateway-windows
+          name: s7-control-plc-gateway-windows-unsigned
           path: plc-gateway/release/*.exe
           if-no-files-found: error

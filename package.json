@@ -12,7 +12,9 @@
     "typecheck": "tsc --noEmit",
     "netlify:build": "netlify build --filter dxwz-frontend",
     "gateway:start": "pnpm --filter s7-plc-gateway start",
-    "gateway:package": "pnpm --filter s7-plc-gateway package:win"
+    "gateway:package": "pnpm --filter s7-plc-gateway package:win",
+    "gateway:package:signed": "pnpm --filter s7-plc-gateway package:win:signed",
+    "gateway:verify-signatures": "powershell -NoProfile -ExecutionPolicy Bypass -File plc-gateway/scripts/verify-signatures.ps1"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
