@@ -38,6 +38,8 @@ media/
 .env.*
 !.env.example
 *.local
+*.pfx
+*.p12
 .netlify/
 deno.lock
 
