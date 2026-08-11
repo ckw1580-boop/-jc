@@ -8,7 +8,7 @@ import StatusBar from './components/StatusBar.vue'
 const route = useRoute()
 const layout = computed(() => route.meta.layout)
 const pageTitle = computed(() => route.meta.title || '工业控制台')
-const pageDescription = computed(() => route.meta.description || 'S7 系列 PLC 前端模拟工作站')
+const pageDescription = computed(() => route.meta.description || 'S7 系列 PLC 工业控制工作站')
 </script>
 
 <template>

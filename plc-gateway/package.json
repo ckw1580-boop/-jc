@@ -1,0 +1,49 @@
+{
+  "name": "s7-plc-gateway",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "main.mjs",
+  "description": "S7 CONTROL Windows localhost gateway for S7-1200 and S7-1500",
+  "author": "S7 CONTROL",
+  "scripts": {
+    "start": "electron .",
+    "test": "vitest run",
+    "package:win": "electron-builder --win nsis --x64 --publish never",
+    "package:dir": "electron-builder --dir --win --x64"
+  },
+  "dependencies": {
+    "nodes7": "0.3.18"
+  },
+  "devDependencies": {
+    "electron": "43.2.0",
+    "electron-builder": "26.15.3",
+    "vitest": "^4.1.10"
+  },
+  "build": {
+    "appId": "cn.wcktlss.s7control.gateway",
+    "productName": "S7 Control PLC Gateway",
+    "artifactName": "S7-Control-PLC-Gateway-${version}-${arch}.${ext}",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.mjs",
+      "src/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": true,
+      "include": "build/installer.nsh",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}

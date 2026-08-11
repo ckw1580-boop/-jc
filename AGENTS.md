@@ -10,6 +10,7 @@
 - Netlify Blobs 保存用户上传的图片附件。
 - Netlify Identity 使用邀请制账户和 `admin` 角色保护反馈后台。
 - 普通控制台用户使用用户ID、scrypt 密码哈希和签名 HttpOnly Cookie 登录；该体系与管理员 Identity 相互独立。
+- Windows 本地 PLC 网关通过 localhost 安全配对，在用户局域网中访问 S7-1200/1500；PLC 地址和值不经过 Netlify。
 
 项目不再使用 Django、SimpleUI、SQLite 或 Python 运行时。
 
@@ -21,6 +22,7 @@ frontend/src/views/admin/         反馈管理页面
 netlify/functions/                Netlify Functions
 netlify/functions/_shared/        API 共享验证、认证和存储逻辑
 netlify/database/migrations/      Netlify Database SQL 迁移
+plc-gateway/                      Electron/NodeS7 Windows 本地 PLC 网关
 netlify.toml                      构建、路由、Functions 与安全头配置
 pnpm-workspace.yaml               pnpm 工作区和构建脚本许可
 ```
@@ -57,6 +59,8 @@ pnpm run dev
 - 公共页面、管理页面和 API 状态必须处理加载、成功、空数据和失败状态。
 - 保持语义化 HTML、键盘焦点、移动端响应式布局和减少动态效果支持。
 - History 路由由 `netlify.toml` 的 SPA 回退支持；旧 Hash 地址只在启动兼容逻辑中处理。
+- 实际 PLC 通信必须由 `plc-gateway/` 在 localhost 执行，前端和 Netlify Functions 不得直接代理 PLC 数据。
+- 实际连接只允许 RFC1918 IPv4 和 TCP 102；写入必须执行预读、逐次确认和写后回读。
 
 ## 必须执行的验证
 

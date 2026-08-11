@@ -3175,6 +3175,208 @@ button.admin-detail-link.resolve { color: var(--success); }
   font-weight: 700;
 }
 
+/* Local PLC gateway: a second, physically distinct communication lane. */
+.connection-channel-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.connection-channel-actions .button {
+  min-height: 66px;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 5px;
+  text-align: left;
+}
+
+.connection-channel-actions .button small {
+  font: 500 10px/1.2 "Cascadia Mono", Consolas, monospace;
+  letter-spacing: 0.04em;
+  opacity: 0.78;
+}
+
+.real-connect-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.real-connect-button::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 7px;
+  height: 100%;
+  content: "";
+  background: repeating-linear-gradient(180deg, #fff 0 6px, transparent 6px 11px);
+  opacity: 0.7;
+}
+
+.connection-safety-note {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  color: var(--muted);
+  background: var(--panel-strong);
+  border-left: 3px solid var(--accent);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.connection-safety-note strong { color: var(--ink); }
+.mode-chip { min-height: 28px; display: inline-flex; align-items: center; padding: 0 9px; border: 1px solid currentColor; font: 700 10px/1 "Cascadia Mono", monospace; }
+.mode-real { color: var(--warning) !important; background: var(--warning-soft); }
+.mode-simulation { color: var(--accent-deep) !important; background: var(--accent-soft); }
+.diagnostic-disclaimer { margin: 12px 0 0; color: var(--faint); font-size: 11px; line-height: 1.55; }
+
+.gateway-pair-dialog {
+  width: min(560px, calc(100% - 28px));
+  padding: 0;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 28px 80px rgba(5, 14, 16, 0.36);
+}
+
+.gateway-pair-dialog::backdrop { background: rgba(5, 14, 16, 0.72); }
+.gateway-pair-dialog form { display: grid; gap: 20px; padding: 28px; }
+.gateway-pair-dialog h2 { margin: 6px 0 8px; }
+.gateway-pair-dialog p { margin: 0; line-height: 1.65; }
+
+.real-tag-station,
+.real-watch-panel {
+  min-width: 0;
+  margin-bottom: var(--section-gap);
+  padding: 24px;
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+}
+
+.tag-config-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.tag-config-toolbar p { margin: 0 0 0 auto; color: var(--muted); font-size: 12px; }
+.file-button { cursor: pointer; }
+.file-button input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.file-button.disabled { cursor: not-allowed; opacity: 0.55; }
+
+.csv-preview {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 16px;
+  color: var(--ink);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+}
+
+.csv-preview > div:first-child { display: flex; justify-content: space-between; gap: 16px; }
+.csv-preview span, .csv-preview li { color: var(--muted); font-size: 12px; }
+.csv-preview ul { margin: 0; padding-left: 20px; }
+.csv-preview .form-actions { justify-content: flex-end; margin-top: 0; }
+
+.tag-config-empty {
+  padding: 38px;
+  color: var(--muted);
+  background: var(--panel-strong);
+  border: 1px dashed var(--line-strong);
+  text-align: center;
+}
+
+.tag-config-empty strong { color: var(--ink); }
+.tag-config-empty p { margin: 7px 0 0; }
+
+.tag-config-table {
+  width: 100%;
+  min-width: 1180px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.tag-config-table th,
+.tag-config-table td { padding: 9px 7px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.tag-config-table th { color: var(--faint); background: var(--panel-strong); font-size: 10px; letter-spacing: 0.05em; }
+.tag-config-table input, .tag-config-table select, .write-inline input {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 8px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+}
+.tag-config-table td:nth-child(1) { min-width: 150px; }
+.tag-config-table td:nth-child(2) { width: 74px; }
+.tag-config-table td:nth-child(3), .tag-config-table td:nth-child(4), .tag-config-table td:nth-child(5) { width: 72px; }
+.tag-config-table td:nth-child(6) { width: 90px; }
+.tag-config-table td:nth-child(8) { min-width: 170px; }
+.tag-config-table td:nth-child(8) input + input { margin-top: 5px; }
+.tag-config-table td:last-child { min-width: 190px; }
+.tag-config-table code { display: block; color: var(--accent-deep); font-size: 11px; white-space: nowrap; }
+.tag-config-table td:last-child small { display: block; margin-top: 5px; color: var(--danger); }
+.tag-row-invalid { background: var(--danger-soft); }
+.compact-check { min-height: 38px; display: inline-flex; align-items: center; gap: 6px; }
+.compact-check input { width: 18px; min-height: 18px; }
+.row-delete { min-height: 38px; margin-top: 6px; padding: 0; border: 0; color: var(--danger); background: transparent; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+.monitoring-controls {
+  min-height: 58px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  padding-top: 18px;
+}
+
+.monitoring-controls p { margin: 0; color: var(--muted); font-size: 13px; }
+
+.write-interlock {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, auto);
+  align-items: center;
+  gap: 22px;
+  margin: -24px -24px 24px;
+  padding: 18px 24px;
+  background: var(--warning-soft);
+  border-bottom: 1px solid color-mix(in srgb, var(--warning) 50%, var(--line));
+}
+
+.write-interlock strong { display: block; margin-top: 4px; }
+.write-interlock p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+.write-interlock label { min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 14px; color: var(--warning); background: var(--panel); border: 1px solid currentColor; font-size: 12px; font-weight: 700; }
+.write-interlock input { width: 18px; height: 18px; accent-color: var(--warning); }
+.real-watch-table { min-width: 1040px; }
+.tag-quality { display: inline-flex; min-height: 26px; align-items: center; padding: 0 8px; border: 1px solid currentColor; font: 700 10px/1 "Cascadia Mono", monospace; text-transform: uppercase; }
+.quality-good { color: var(--success); background: var(--success-soft); }
+.quality-bad { color: var(--danger); background: var(--danger-soft); }
+.quality-unknown { color: var(--faint); background: var(--panel-strong); }
+.write-inline { min-width: 220px; display: grid; grid-template-columns: minmax(110px, 1fr) auto; gap: 7px; }
+.table-action:disabled { cursor: not-allowed; opacity: 0.48; }
+
+.write-confirm-dialog { width: min(600px, calc(100% - 28px)); }
+.write-preview-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin: 0; background: var(--line); border: 1px solid var(--line); }
+.write-preview-list div { padding: 11px 12px; background: var(--surface); }
+.write-preview-list dt { color: var(--faint); font-size: 10px; }
+.write-preview-list dd { margin: 4px 0 0; overflow-wrap: anywhere; font-weight: 700; }
+
+@media (max-width: 760px) {
+  .connection-channel-actions,
+  .write-interlock,
+  .write-preview-list { grid-template-columns: 1fr; }
+  .tag-config-toolbar { align-items: stretch; flex-direction: column; }
+  .tag-config-toolbar p { margin-left: 0; }
+  .tag-config-toolbar .button { width: 100%; }
+  .monitoring-controls { align-items: stretch; flex-direction: column; }
+  .monitoring-controls .button { width: 100%; }
+  .write-interlock { margin: -24px -24px 24px; }
+  .gateway-pair-dialog form { padding: 22px 18px; }
+}
+
 @media (max-width: 760px) {
   .admin-header,
   .admin-account,

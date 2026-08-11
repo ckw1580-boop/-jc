@@ -1,9 +1,12 @@
 packages:
   - frontend
   - netlify/functions
+  - plc-gateway
 
 allowBuilds:
   esbuild: true
   netlify-cli: true
   sharp: true
+  electron: true
+  electron-winstaller: true
   unix-dgram: false
