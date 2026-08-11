@@ -13,6 +13,7 @@ const props = defineProps({
 const tasks = [
   { label: '使用方法介绍', to: '/home/guide' },
   { label: '页面基础信息', to: '/home/info' },
+  { label: '更新信息', to: '/home/updates' },
 ]
 
 const isGuide = computed(() => props.section === 'guide')
@@ -30,7 +31,7 @@ const isInfo = computed(() => props.section === 'info')
           <h1 id="home-guide-title">从连接到诊断</h1>
           <p>先建立模拟连接，再监视变量和定位故障。所有操作只发生在当前浏览器中。</p>
         </div>
-        <div class="view-heading-actions"><RouterLink class="button button-secondary" to="/home/updates">更新信息</RouterLink><RouterLink class="button button-primary" to="/connection/status">开始连接</RouterLink></div>
+        <div class="view-heading-actions"><RouterLink class="button button-primary" to="/connection/status">开始连接</RouterLink></div>
       </header>
 
       <PlcRack series="S7-1500" state="connected" />
@@ -75,7 +76,6 @@ const isInfo = computed(() => props.section === 'info')
           <h1 id="home-info-title">S7 系列基础信息</h1>
           <p>用工程定位理解两个系列，不展示未经核验的具体性能参数。</p>
         </div>
-        <RouterLink class="button button-secondary" to="/home/updates">更新信息</RouterLink>
       </header>
 
       <div class="series-comparison">
