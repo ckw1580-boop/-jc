@@ -16,6 +16,8 @@ htmlcov/
 
 # Build and packaging output
 build/
+!plc-gateway/build/
+!plc-gateway/build/installer.nsh
 dist/
 frontend/node_modules/
 node_modules/
