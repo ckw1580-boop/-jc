@@ -10,6 +10,7 @@
     "start": "electron .",
     "test": "vitest run",
     "package:win": "electron-builder --win nsis --x64 --publish never",
+    "package:win:signed": "electron-builder --win nsis --x64 --publish never --config.forceCodeSigning=true",
     "package:dir": "electron-builder --dir --win --x64"
   },
   "dependencies": {
