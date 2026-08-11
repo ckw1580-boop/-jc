@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import LocalTaskbar from '../components/LocalTaskbar.vue'
+import HomeUpdatesPanel from '../components/HomeUpdatesPanel.vue'
 import PlcRack from '../components/PlcRack.vue'
 
 const props = defineProps({
@@ -15,6 +16,7 @@ const tasks = [
 ]
 
 const isGuide = computed(() => props.section === 'guide')
+const isInfo = computed(() => props.section === 'info')
 </script>
 
 <template>
@@ -28,7 +30,7 @@ const isGuide = computed(() => props.section === 'guide')
           <h1 id="home-guide-title">从连接到诊断</h1>
           <p>先建立模拟连接，再监视变量和定位故障。所有操作只发生在当前浏览器中。</p>
         </div>
-        <RouterLink class="button button-primary" to="/connection/status">开始连接</RouterLink>
+        <div class="view-heading-actions"><RouterLink class="button button-secondary" to="/home/updates">更新信息</RouterLink><RouterLink class="button button-primary" to="/connection/status">开始连接</RouterLink></div>
       </header>
 
       <PlcRack series="S7-1500" state="connected" />
@@ -66,13 +68,14 @@ const isGuide = computed(() => props.section === 'guide')
       </div>
     </section>
 
-    <section v-else class="view-panel home-info" aria-labelledby="home-info-title">
+    <section v-else-if="isInfo" class="view-panel home-info" aria-labelledby="home-info-title">
       <header class="view-heading">
         <div>
           <p class="utility-label">HOME / BASIC INFORMATION</p>
           <h1 id="home-info-title">S7 系列基础信息</h1>
           <p>用工程定位理解两个系列，不展示未经核验的具体性能参数。</p>
         </div>
+        <RouterLink class="button button-secondary" to="/home/updates">更新信息</RouterLink>
       </header>
 
       <div class="series-comparison">
@@ -109,5 +112,7 @@ const isGuide = computed(() => props.section === 'guide')
         <p>本页仅用于界面演示和系列定位。进行设备选型、组态或维护时，请以 Siemens 官方产品页和对应版本手册为准。</p>
       </div>
     </section>
+
+    <HomeUpdatesPanel v-else />
   </div>
 </template>

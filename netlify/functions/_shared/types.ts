@@ -27,3 +27,23 @@ export interface FeedbackDraftInput {
   description: string
 }
 
+export interface FeedbackUpdateInput {
+  title: string
+  summary: string
+}
+
+export interface FeedbackUpdateRow {
+  id: string
+  source_feedback_id: string
+  title: string
+  summary: string
+  published_at: Date | string
+  updated_at: Date | string
+}
+
+export interface BlobCleanupRow {
+  blob_key: string
+  source_feedback_id: string
+  attempts: number
+}
+

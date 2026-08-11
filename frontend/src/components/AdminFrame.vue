@@ -9,6 +9,7 @@ const router = useRouter()
 const { logout, user } = useIdentity()
 const sections = [
   { label: '反馈管理', to: '/admin/feedback', match: '/admin/feedback' },
+  { label: '更新信息管理', to: '/admin/updates', match: '/admin/updates' },
   { label: '用户信息管理', to: '/admin/users', match: '/admin/users' },
 ]
 function isCurrent(item) { return route.path.startsWith(item.match) }

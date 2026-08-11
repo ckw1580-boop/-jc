@@ -23,6 +23,7 @@
   --danger: #b73535;
   --danger-soft: #f5dfdf;
   --focus: #0b6cff;
+  --link-visited: #4e6064;
   --header-height: 72px;
   --status-height: 36px;
   --sidebar-width: 220px;
@@ -54,6 +55,7 @@
   --danger: #ee7d7d;
   --danger-soft: #442626;
   --focus: #78aaff;
+  --link-visited: #b6c2c5;
   color-scheme: dark;
 }
 
@@ -88,7 +90,8 @@ body:has(.mobile-nav.open) {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -111,7 +114,7 @@ a {
 }
 
 a:visited {
-  color: var(--accent-deep);
+  color: var(--link-visited);
 }
 
 :focus-visible {
@@ -1022,6 +1025,7 @@ p {
 
 .field input,
 .field select,
+.field textarea,
 .inline-number input {
   width: 100%;
   min-height: var(--control-height);
@@ -1034,14 +1038,23 @@ p {
   transition: border-color 130ms ease-out, box-shadow 130ms ease-out;
 }
 
+.field textarea {
+  min-height: 132px;
+  padding: 11px 12px;
+  resize: vertical;
+  line-height: 1.65;
+}
+
 .field input:hover,
 .field select:hover,
+.field textarea:hover,
 .inline-number input:hover {
   border-color: var(--accent);
 }
 
 .field input:focus-visible,
 .field select:focus-visible,
+.field textarea:focus-visible,
 .inline-number input:focus-visible {
   outline: 0;
   border-color: var(--focus);
@@ -1054,7 +1067,8 @@ p {
   opacity: 0.65;
 }
 
-.field input[aria-invalid="true"] {
+.field input[aria-invalid="true"],
+.field textarea[aria-invalid="true"] {
   border-color: var(--danger);
 }
 
@@ -2596,12 +2610,45 @@ legend {
 button.admin-detail-link { min-height: 44px; padding: 0; border: 0; color: var(--accent-deep); background: transparent; }
 button.admin-detail-link.danger { color: var(--danger); }
 .admin-action-dialog { width: min(520px, calc(100% - 28px)); padding: 0; color: var(--ink); background: var(--panel); border: 1px solid var(--line-strong); box-shadow: 0 28px 80px rgba(5, 14, 16, 0.32); }
+.admin-action-dialog { overscroll-behavior: contain; }
 .admin-action-dialog::backdrop { background: rgba(5, 14, 16, 0.66); }
 .admin-action-dialog form { display: grid; gap: 18px; padding: 28px; }
 .admin-action-dialog h2, .admin-action-dialog p { margin: 0; }
 .dialog-safety-line { margin: -28px -28px 0; padding: 11px 28px; color: var(--accent-deep); background: var(--accent-soft); border-bottom: 1px solid var(--line); }
 .dialog-safety-line.danger { color: var(--danger); background: var(--danger-soft); }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; padding-top: 4px; }
+
+.feedback-resolve-dialog { width: min(640px, calc(100% - 28px)); }
+.dialog-lead { margin-top: 5px !important; color: var(--muted); overflow-wrap: anywhere; }
+.dialog-warning { padding: 12px 14px; color: var(--warning); background: var(--warning-soft); border-left: 4px solid currentColor; line-height: 1.65; }
+.feedback-row-actions, .admin-heading-actions, .view-heading-actions { display: flex; align-items: center; gap: 12px; }
+.feedback-row-actions { white-space: nowrap; }
+button.admin-detail-link.resolve { color: var(--success); }
+.updates-admin-table { min-width: 1080px; }
+.table-record-id { display: block; margin-top: 5px; color: var(--faint); font-size: 10px; font-weight: 400; }
+.admin-summary-cell { display: -webkit-box; max-width: 460px; margin: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 1.55; }
+.update-action-dialog { width: min(620px, calc(100% - 28px)); }
+
+/* Resolved feedback becomes a maintenance log, using the rail as chronology rather than decoration. */
+.home-updates { min-width: 0; }
+.maintenance-timeline { display: grid; gap: 0; max-width: 1120px; margin: 0; padding: 0; list-style: none; }
+.maintenance-timeline > li { display: grid; grid-template-columns: 72px minmax(0, 1fr); }
+.maintenance-index { position: relative; display: flex; justify-content: center; padding-top: 24px; }
+.maintenance-index::before { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; content: ""; background: var(--line-strong); transform: translateX(-50%); }
+.maintenance-index span { z-index: 1; width: 40px; height: 40px; display: grid; place-items: center; color: var(--accent-deep); background: var(--surface); border: 2px solid var(--accent); font: 700 12px/1 "Cascadia Mono", monospace; }
+.maintenance-index i { position: absolute; top: 42px; right: -1px; width: 22px; height: 2px; background: var(--accent); }
+.maintenance-timeline article { margin-bottom: 20px; padding: 22px 24px; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); }
+.maintenance-timeline article > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding-bottom: 15px; border-bottom: 1px solid var(--line); }
+.maintenance-timeline h2 { margin: 0; font: 700 clamp(19px, 2vw, 25px)/1.25 "Bahnschrift", "Microsoft YaHei", sans-serif; }
+.maintenance-timeline header time { flex: none; color: var(--muted); font-size: 12px; }
+.maintenance-timeline article > p { margin: 18px 0 0; line-height: 1.8; white-space: pre-wrap; }
+.maintenance-timeline footer { margin-top: 16px; color: var(--faint); font-size: 11px; }
+.updates-empty { max-width: 760px; padding: clamp(28px, 6vw, 64px); color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--line-strong); }
+.updates-empty span { color: var(--accent-deep); font-size: 11px; }
+.updates-empty h2 { margin: 10px 0 8px; color: var(--ink); }
+.updates-empty p { margin: 0; }
+.inline-retry { min-height: 44px; margin-left: 8px; padding: 0 8px; color: currentColor; background: transparent; border: 0; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.updates-pagination { max-width: 1120px; margin-top: 24px; }
 
 @media (max-width: 1180px) {
   .operator-chip { display: none; }
@@ -2633,6 +2680,12 @@ button.admin-detail-link.danger { color: var(--danger); }
   .admin-section-nav a { flex: 1; justify-content: center; white-space: nowrap; }
   .admin-section-nav a.active::after { bottom: 0; }
   .dialog-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .view-heading-actions, .admin-heading-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .maintenance-timeline > li { grid-template-columns: 48px minmax(0, 1fr); }
+  .maintenance-index span { width: 34px; height: 34px; }
+  .maintenance-index i { top: 39px; width: 12px; }
+  .maintenance-timeline article { padding: 18px 16px; }
+  .maintenance-timeline article > header { display: grid; gap: 10px; }
 }
 
 @media (max-width: 420px) {
