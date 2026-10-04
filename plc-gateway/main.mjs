@@ -14,8 +14,10 @@ let gateway
 let menuTimer
 
 function trayIcon() {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" rx="3" fill="#006f78"/><path d="M6 17h5l3-8 5 14 3-6h4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="6" cy="17" r="2" fill="#fff"/><circle cx="26" cy="17" r="2" fill="#fff"/></svg>`
-  return nativeImage.createFromDataURL(`data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`).resize({ width: 16, height: 16 })
+  const iconPath = app.isPackaged
+    ? path.join(process.resourcesPath, 'icon.ico')
+    : path.join(app.getAppPath(), 'build', 'icon.ico')
+  return nativeImage.createFromPath(iconPath)
 }
 
 function rebuildMenu() {

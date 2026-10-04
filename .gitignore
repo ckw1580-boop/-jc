@@ -18,6 +18,8 @@ htmlcov/
 build/
 !plc-gateway/build/
 !plc-gateway/build/installer.nsh
+!plc-gateway/build/icon.ico
+!plc-gateway/build/icon.png
 dist/
 frontend/node_modules/
 node_modules/

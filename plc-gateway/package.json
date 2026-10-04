@@ -33,11 +33,20 @@
       "src/**/*",
       "package.json"
     ],
+    "extraResources": [
+      {
+        "from": "build/icon.ico",
+        "to": "icon.ico"
+      }
+    ],
     "asar": true,
     "win": {
+      "icon": "build/icon.ico",
       "target": "nsis"
     },
     "nsis": {
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "perMachine": false,
